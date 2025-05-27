@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../database/profile.dart'; // adjust the path as needed
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,6 +12,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
 
   bool _isLoading = false;
   String _errorCode = "";
@@ -24,7 +27,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!context.mounted) return;
     Navigator.pushReplacementNamed(context, 'home');
   }
-
   void register() async {
     setState(() {
       _isLoading = true;
@@ -32,10 +34,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      // Create the Firebase Auth user
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
+
+      // Create Firestore profile for the user
+      await ProfileService().createProfile(
+        email: _emailController.text.trim(),
+        first: _firstNameController.text.trim(),
+        lastname: _lastNameController.text.trim(),
+      );
+
       navigateLogin();
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -63,6 +75,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 48),
               Icon(Icons.lock_outline, size: 100, color: Colors.blue[200]),
               const SizedBox(height: 48),
+              TextField(
+                controller: _firstNameController,
+                decoration: const InputDecoration(label: Text('First name')),
+              ),
+              TextField(
+                controller: _lastNameController,
+                decoration: const InputDecoration(label: Text('Last name')),
+              ),
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(label: Text('Email')),
