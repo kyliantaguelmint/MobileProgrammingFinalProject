@@ -14,7 +14,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-
+  final _bioController = TextEditingController();
   bool _isLoading = false;
   String _errorCode = "";
 
@@ -46,6 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
         first: _firstNameController.text.trim(),
         lastname: _lastNameController.text.trim(),
+        bio : _bioController.text.trim()
       );
 
       navigateLogin();
@@ -91,6 +92,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(label: Text('Password')),
+              ),
+              TextField(
+                controller: _bioController,
+                obscureText: true,
+                decoration: const InputDecoration(label: Text('Bio')),
               ),
               const SizedBox(height: 24),
               _errorCode != ""

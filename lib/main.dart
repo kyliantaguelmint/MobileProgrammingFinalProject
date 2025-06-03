@@ -1,10 +1,12 @@
+import 'package:firebase/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // Ce fichier est généré par `flutterfire configure`
-import 'screens/home.dart';
-import 'screens/login.dart';
-import 'screens/register.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
 import 'services/notification_service.dart';
+import 'screens/plus_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,10 +23,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: 'login', routes: {
+    return MaterialApp(initialRoute: 'profile', routes: {
       'home': (context) => HomeScreen(),
       'login': (context) => const LoginScreen(),
       'register': (context) => const RegisterScreen(),
+      'profile' : (context) => const ProfileScreen(),
+      'plus': (context) => const PlusScreen(), // <-- Add this line
     });
   }
 }
