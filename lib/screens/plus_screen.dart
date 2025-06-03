@@ -10,6 +10,9 @@ class PlusScreen extends StatefulWidget {
 class _PlusScreenState extends State<PlusScreen> {
   int _selectedScreen = 1;
 
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+
   void _onButtonTapped(int i) {
     if (i == _selectedScreen) return;
     setState(() {
@@ -30,25 +33,81 @@ class _PlusScreenState extends State<PlusScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add Article',
+          'Articles',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.amber[100],
           ),
         ),
         backgroundColor: Colors.blue,
+        centerTitle: true,
       ),
-      body: const Center(
-        child: Text(
-          'This is the Plus (Article) screen.',
-          style: TextStyle(
-            color: Colors.blue,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+      backgroundColor: Colors.amber[100],
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Name of the article ....',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: implement image picker
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  minimumSize: const Size.fromHeight(48),
+                ),
+                child: const Text('Choose image',style: TextStyle(fontSize: 18, color: Colors.amber),),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                height: 200,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextField(
+                  controller: _contentController,
+                  maxLines: null,
+                  expands: true,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Text Area',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: implement create article logic
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  minimumSize: const Size.fromHeight(48),
+                ),
+                child: const Text(
+                  'Create',
+                  style: TextStyle(fontSize: 18, color: Colors.amber),
+                ),
+              ),
+            ],
           ),
         ),
       ),
-      backgroundColor: Colors.amber[100],
       bottomNavigationBar: NavigationSection(
         currentSection: _selectedScreen,
         onTap: _onButtonTapped,
@@ -75,6 +134,8 @@ class NavigationSection extends StatelessWidget {
       onTap: onTap,
       showSelectedLabels: false,
       showUnselectedLabels: false,
+      selectedItemColor: Colors.amber[100],
+      unselectedItemColor: Colors.white,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Article'),
