@@ -9,6 +9,7 @@ class ProfileService {
     required String email,
     required String first,
     required String lastname,
+    required String bio,
   }) async {
     final existing = await _profiles.where('email', isEqualTo: email).limit(1).get();
     if (existing.docs.isEmpty) {
@@ -16,6 +17,7 @@ class ProfileService {
         'email': email,
         'first': first,
         'lastname': lastname,
+        'bio' : bio
       });
     } else {
       // Optionally, update instead
@@ -29,12 +31,13 @@ class ProfileService {
     String? email,
     String? first,
     String? lastname,
+    String ?bio,
   }) async {
     final data = <String, dynamic>{};
     if (email != null) data['email'] = email;
     if (first != null) data['first'] = first;
     if (lastname != null) data['lastname'] = lastname;
-
+        if (bio != null) data['bio'] = lastname;
     await _profiles.doc(id).update(data);
   }
 

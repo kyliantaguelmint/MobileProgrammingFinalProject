@@ -82,6 +82,9 @@ class NavigationSection extends StatelessWidget {
   }
 }
 
+
+
+//fetching profile data
 final user = FirebaseAuth.instance.currentUser;
 final email = user?.email;
 
@@ -89,12 +92,14 @@ class ProfileData {
   final String email;
   final String first;
   final String lastname;
+  final String bio;
 
   ProfileData({
     required this.email,
     required this.first,
     required this.lastname,
-  });
+    required this.bio  
+    });
 }
 
 Future<ProfileData?> fetchProfileData(String email) async {
@@ -106,6 +111,7 @@ Future<ProfileData?> fetchProfileData(String email) async {
       email: data['email'] ?? '',
       first: data['first'] ?? '',
       lastname: data['lastname'] ?? '',
+      bio: data['bio'] ?? 'mo bio'
     );
   }
   return null;
@@ -124,7 +130,14 @@ class ProfileContent extends StatelessWidget {
       return const Center(child: Text('Not logged in.'));
     }
 
-    return FutureBuilder<ProfileData?>(
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.amber[100],
+
+      ),
+      child: FutureBuilder<ProfileData?>(
       future: fetchProfileData(email),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -133,18 +146,66 @@ class ProfileContent extends StatelessWidget {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData && snapshot.data != null) {
           final profile = snapshot.data!;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          return Center (
+            child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Email: ${profile.email}'),
-              Text('First Name: ${profile.first}'),
-              Text('Last Name: ${profile.lastname}'),
+              const SizedBox(height: 30),
+              const CircleAvatar(
+                radius: 60,
+                backgroundImage: NetworkImage('https://mymodernmet.com/wp/wp-content/uploads/2019/09/100k-ai-faces-6.jpg'),
+              ),
+              const SizedBox(height: 100),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    profile.first,
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    profile.lastname,
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                ],
+              ),
+              Text(
+                profile.email,
+                style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    )
+              ),
+              Text(
+                profile.bio,
+                style: const TextStyle(
+                      color: Colors.blue,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    )
+              ),
+
             ],
-          );
+          ),
+        );
+          
         } else {
           return const Center(child: Text('Profile not found.'));
         }
       },
+    ),
     );
+
+    
   }
 }
