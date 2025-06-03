@@ -1,7 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
-import '../screens/second_screen.dart';
+import '../screens/notification_screen.dart';
 class NotificationService {
   static Future<void> createNotification({
   required final int id,

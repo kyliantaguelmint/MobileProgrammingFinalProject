@@ -15,7 +15,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _selectedScreen = 1;
+  int _selectedScreen = 2; // Set to 2 for Profile tab
 
   void _onButtonTapped (int i) {
     if (i == _selectedScreen) return;
@@ -27,6 +27,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.pushReplacementNamed(context, 'home');
     }
     else if (i == 1){
+      Navigator.pushReplacementNamed(context, 'plus'); // Navigate to Add/Plus page
+    }
+    else if (i == 2) {
       // profile
       Navigator.pushReplacementNamed(context, 'profile');
     }
