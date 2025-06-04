@@ -7,12 +7,11 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'services/notification_service.dart';
 import 'screens/plus_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.initializeNotification();
   runApp(const MyApp());
 }
@@ -23,13 +22,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: 'profile', routes: {
-      'home': (context) => HomeScreen(),
-      'login': (context) => const LoginScreen(),
-      'register': (context) => const RegisterScreen(),
-      'profile' : (context) => const ProfileScreen(),
-      'plus': (context) => const PlusScreen(), // <-- Add this line
-    });
+    return MaterialApp(
+      routes: {
+        'home': (context) => HomeScreen(),
+        'login': (context) => const LoginScreen(),
+        'register': (context) => const RegisterScreen(),
+        'profile': (context) => const ProfileScreen(),
+        'plus': (context) => const PlusScreen(),
+      },
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Viser loading spinner mens vi venter på auth-status
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (snapshot.hasData) {
+            // Brukeren er logget inn
+            return const ProfileScreen(); // Eller hvilken som helst "hjemmeside"
+          }
+          // Brukeren er ikke logget inn
+          return const LoginScreen();
+        },
+      ),
+    );
   }
 }
 

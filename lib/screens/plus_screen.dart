@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:firebase/services/article_service.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PlusScreen extends StatefulWidget {
   const PlusScreen({super.key});
@@ -12,6 +15,21 @@ class _PlusScreenState extends State<PlusScreen> {
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  final ArticleService _articleService = ArticleService();
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   void _onButtonTapped(int i) {
     if (i == _selectedScreen) return;
@@ -63,14 +81,26 @@ class _PlusScreenState extends State<PlusScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: implement image picker
+                  //todo
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   minimumSize: const Size.fromHeight(48),
                 ),
-                child: const Text('Choose image',style: TextStyle(fontSize: 18, color: Colors.amber),),
+                child: const Text(
+                  'Choose image',
+                  style: TextStyle(fontSize: 18, color: Colors.amber),
+                ),
               ),
+              if (_selectedImage != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Image.file(
+                    _selectedImage!,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               const SizedBox(height: 16),
               Container(
                 height: 200,
@@ -92,8 +122,38 @@ class _PlusScreenState extends State<PlusScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // TODO: implement create article logic
+                  final title = _titleController.text.trim();
+                  final content = _contentController.text.trim();
+
+                  if (title.isEmpty || content.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Fyll inn både tittel og innhold'),
+                      ),
+                    );
+                    return;
+                  }
+
+                  try {
+                    await _articleService.addArticleFromInput(
+                      title: title,
+                      content: content,
+                      imageFile: _selectedImage,
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('✅ Artikkel opprettet!')),
+                    );
+
+                    _titleController.clear();
+                    _contentController.clear();
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('❌ Feil: $e')));
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
