@@ -37,7 +37,7 @@ class ProfileService {
     if (email != null) data['email'] = email;
     if (first != null) data['first'] = first;
     if (lastname != null) data['lastname'] = lastname;
-        if (bio != null) data['bio'] = lastname;
+        if (bio != null) data['bio'] = bio;
     await _profiles.doc(id).update(data);
   }
 
@@ -50,6 +50,13 @@ class ProfileService {
   Stream<QuerySnapshot> getProfiles() {
     return _profiles.snapshots();
   }
+Future<void> updateProfileByEmail(String email, Map<String, dynamic> data) async {
+  final snapshot = await _profiles.where('email', isEqualTo: email).limit(1).get();
+  if (snapshot.docs.isNotEmpty) {
+    final docId = snapshot.docs.first.id;
+    await _profiles.doc(docId).update(data);
+  }
+}
 
   /// Obtenir un profil via son ID
   Future<DocumentSnapshot> getProfile(String id) {
