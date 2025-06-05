@@ -27,6 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!context.mounted) return;
     Navigator.pushReplacementNamed(context, 'home');
   }
+
   void register() async {
     setState(() {
       _isLoading = true;
@@ -35,8 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       // Create the Firebase Auth user
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
@@ -46,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
         first: _firstNameController.text.trim(),
         lastname: _lastNameController.text.trim(),
-        bio : _bioController.text.trim()
+        bio: _bioController.text.trim(),
       );
 
       navigateLogin();
@@ -64,10 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Register'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -95,20 +92,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               TextField(
                 controller: _bioController,
-                obscureText: true,
+                obscureText: false,
                 decoration: const InputDecoration(label: Text('Bio')),
               ),
               const SizedBox(height: 24),
               _errorCode != ""
                   ? Column(
-                      children: [Text(_errorCode), const SizedBox(height: 24)],
-                    )
+                    children: [Text(_errorCode), const SizedBox(height: 24)],
+                  )
                   : const SizedBox(height: 0),
               OutlinedButton(
                 onPressed: register,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Register'),
+                child:
+                    _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text('Register'),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -117,9 +115,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   TextButton(
                     onPressed: navigateLogin,
                     child: const Text('Login'),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),

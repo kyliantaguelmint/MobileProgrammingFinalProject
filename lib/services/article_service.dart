@@ -10,14 +10,14 @@ class ArticleService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  /* Future<void> addArticleFromInput({
+  Future<void> addArticleFromInput({
     required String title,
     required String content,
     File? imageFile,
   }) async {
     String? imageUrl;
 
-    if (imageFile != null) {
+    /* if (imageFile != null) {
 
       print('Image path: ${imageFile.path}');
       if (!imageFile.existsSync()) {
@@ -35,45 +35,9 @@ class ArticleService {
       final snapshot = await uploadTask.whenComplete(() {});
       final imageUrl = await snapshot.ref.getDownloadURL();
 
-    }
+    } */
 
     // Lagre artikkelen i Firestore med eventuell bilde-URL
-    await _firestore.collection('articles').add({
-      'title': title,
-      'content': content,
-      'imageUrl': imageUrl,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-  } */
-  Future<void> addArticleFromInput({
-    required String title,
-    required String content,
-    File? imageFile,
-  }) async {
-    String? imageUrl;
-
-    if (imageFile != null) {
-      if (!imageFile.existsSync()) {
-        print('Image file does not exist at path: ${imageFile.path}');
-        return;
-      }
-
-      final ref = _storage
-          .ref()
-          .child('article_images')
-          .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-
-      final uploadTask = ref.putFile(imageFile);
-
-      try {
-        final snapshot = await uploadTask.whenComplete(() {});
-        imageUrl = await snapshot.ref.getDownloadURL();
-      } catch (e) {
-        print('Error uploading image: $e');
-        return; // Håndter feilen på en god måte
-      }
-    }
-
     await _firestore.collection('articles').add({
       'title': title,
       'content': content,
