@@ -2,6 +2,7 @@ import 'package:firebase/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // Ce fichier est généré par `flutterfire configure`
+import 'screens/article_postings_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
@@ -24,13 +25,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        'home': (context) => HomeScreen(),
+        'articles': (context) => ArticlePostingsPage(),
         'login': (context) => const LoginScreen(),
         'register': (context) => const RegisterScreen(),
         'profile': (context) => const ProfileScreen(),
         'plus': (context) => const PlusScreen(),
       },
-      home: StreamBuilder<User?>(
+      home: const LoginScreen() /* StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
           // Brukeren er ikke logget inn
           return const LoginScreen();
         },
-      ),
+      ), */,
     );
   }
 }
