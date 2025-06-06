@@ -41,24 +41,15 @@ class ArticleService {
     } */
 
     final user = _auth.currentUser;
+    final email = user?.email;
+    logger.i('User ID: $email');
 
     if (user == null) {
       throw Exception('No user logged in');
     }
+
     print(user.uid);
     logger.i('User ID: ${user.uid}');
-
-    final userProfileDoc =
-        await FirebaseFirestore.instance
-            .collection('profiles')
-            .doc(user.uid)
-            .get();
-
-    final data = userProfileDoc.data();
-    final first = data?['first'] ?? '';
-    final last = data?['lastname'] ?? '';
-    final email = data?['email'] ?? '';
-
     logger.i('user email : $email');
 
     await _firestore.collection('articles').add({
@@ -67,7 +58,7 @@ class ArticleService {
       'imageUrl': imageUrl,
       'createdAt': FieldValue.serverTimestamp(),
       'authorId': user.uid,
-      'authorName': email,
+      'email': email,
     });
   }
 
