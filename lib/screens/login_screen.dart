@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void navigateHome() {
     if (!context.mounted) return;
-    Navigator.pushReplacementNamed(context, 'home');
+    Navigator.pushReplacementNamed(context, 'articles');
   }
 
   void signIn() async {
@@ -51,10 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Login'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -75,13 +72,15 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 24),
               _errorCode != ""
                   ? Column(
-                      children: [Text(_errorCode), const SizedBox(height: 24)])
+                    children: [Text(_errorCode), const SizedBox(height: 24)],
+                  )
                   : const SizedBox(height: 0),
               OutlinedButton(
                 onPressed: signIn,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Login'),
+                child:
+                    _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text('Login'),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -90,9 +89,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: navigateRegister,
                     child: const Text('Register'),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),

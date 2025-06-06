@@ -38,7 +38,7 @@ class _PlusScreenState extends State<PlusScreen> {
     });
 
     if (i == 0) {
-      Navigator.pushReplacementNamed(context, 'home');
+      Navigator.pushReplacementNamed(context, 'articles');
     } else if (i == 1) {
       Navigator.pushReplacementNamed(context, 'plus');
     } else if (i == 2) {
@@ -130,7 +130,7 @@ class _PlusScreenState extends State<PlusScreen> {
                   if (title.isEmpty || content.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Fyll inn både tittel og innhold'),
+                        content: Text('Fill out title and content!'),
                       ),
                     );
                     return;

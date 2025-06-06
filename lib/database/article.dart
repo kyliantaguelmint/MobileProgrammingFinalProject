@@ -5,6 +5,7 @@ class Article {
   final String title;
   final String content;
   final String authorId;
+  final String? email;
   final Timestamp createdAt;
   final List<String> likes;
   final String? imageUrl; // <-- nytt valgfritt felt for bilde-URL
@@ -14,6 +15,7 @@ class Article {
     required this.title,
     required this.content,
     required this.authorId,
+    required this.email,
     required this.createdAt,
     required this.likes,
     this.imageUrl, // valgfritt
@@ -31,14 +33,20 @@ class Article {
   }
 
   factory Article.fromMap(Map<String, dynamic> data, String id) {
-    return Article(
-      id: id,
-      title: data['title'],
-      content: data['content'],
-      authorId: data['authorId'],
-      createdAt: data['createdAt'],
-      likes: List<String>.from(data['likes'] ?? []),
-      imageUrl: data['imageUrl'], // hent bilde-URL hvis finnes
-    );
+    try {
+      return Article(
+        id: id,
+        title: data['title'] as String? ?? 'No title',
+        content: data['content'] as String? ?? '',
+        authorId: data['authorId'] as String? ?? 'Unknown',
+        createdAt: data['createdAt'] as Timestamp? ?? Timestamp.now(),
+        email: data['email'] as String? ?? 'Unknown email',
+        likes: List<String>.from(data['likes'] ?? []),
+        imageUrl: data['imageUrl'] as String?,
+      );
+    } catch (e) {
+      print('Feil i fromMap for dokument $id: $e');
+      rethrow;
+    }
   }
 }

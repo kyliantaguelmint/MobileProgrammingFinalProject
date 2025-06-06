@@ -41,6 +41,7 @@ dependencies:
   firebase_storage: ^12.4.5 
   auto_size_text: ^3.0.0
   awesome_notifications: ^0.10.1
+  logger: ^2.0.2
 
 dev_dependencies:
   flutter_test:
