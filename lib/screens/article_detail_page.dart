@@ -25,8 +25,8 @@ class ArticleDetailPage extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Full article content goes here...',
+            Text(
+              '${article['content']}',
               style: TextStyle(fontSize: 16),
             ),
           ],
