@@ -20,26 +20,6 @@ class ArticleService {
     String? imageUrl
   }) async {
 
-    /* if (imageFile != null) {
-
-      print('Image path: ${imageFile.path}');
-      if (!imageFile.existsSync()) {
-        print('ERROR: Image file does not exist!');
-        return; 
-      }
-
-      final ref = _storage
-          .ref()
-          .child('article_images')
-          .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
-
-      final uploadTask = ref.putFile(imageFile);
-
-      final snapshot = await uploadTask.whenComplete(() {});
-      final imageUrl = await snapshot.ref.getDownloadURL();
-
-    } */
-
     final user = _auth.currentUser;
     final email = user?.email;
     logger.i('User ID: $email');

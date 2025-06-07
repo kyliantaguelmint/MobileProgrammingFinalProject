@@ -4,7 +4,7 @@ import '../services/article_service.dart';
 import 'article_detail_page.dart';
 import 'plus_screen.dart';
 import 'package:firebase/database/article.dart';
-
+import '../services/comment_service.dart';
 class ArticlePostingsPage extends StatefulWidget {
   const ArticlePostingsPage({super.key});
 
@@ -13,6 +13,7 @@ class ArticlePostingsPage extends StatefulWidget {
 }
 
 class ArticlePostingsPageState extends State<ArticlePostingsPage> {
+  final CommentService _commentService = CommentService();
   final ArticleService _articleService = ArticleService();
   List<Article> _articles = [];
   bool _isLoading = true;
@@ -47,8 +48,54 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
       Navigator.pushReplacementNamed(context, 'profile');
     }
   }
+  Future<void> _showAddCommentDialog(String articleId) async {
+    final TextEditingController _commentController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
 
-  // === New method to show edit popup ===
+    final submitted = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Comment'),
+          content: Form(
+            key: _formKey,
+            child: TextFormField(
+              controller: _commentController,
+              decoration: const InputDecoration(labelText: 'Comment'),
+              maxLines: 3,
+              validator: (value) =>
+                  value == null || value.isEmpty ? 'Enter a comment' : null,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  await _commentService.addComment(
+                    articleId: articleId,
+                    content: _commentController.text,
+                  );
+                  Navigator.pop(context, true);
+                }
+              },
+              child: const Text('Post'),
+            ),
+          ],
+        );
+      },
+    );
+
+  if (submitted == true) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Comment added')),
+    );
+  }
+}
+
   Future<void> _showEditDialog(Article article) async {
     final _titleController = TextEditingController(text: article.title);
     final _contentController = TextEditingController(text: article.content);
@@ -100,7 +147,7 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
                   );
 
                   await _articleService.updateArticle(updatedArticle);
-                  Navigator.pop(context, true); // Return true to indicate update
+                  Navigator.pop(context, true);
                 }
               },
               child: const Text('Save'),
@@ -118,7 +165,7 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFECB3), // Lys gul bakgrunn
+      backgroundColor: const Color(0xFFFFECB3),
       appBar: AppBar(title: const Text('Blog'), backgroundColor: Colors.blue),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -130,19 +177,12 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
                 final article = _articles[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ArticleDetailPage(
-                          article: {
-                            'title': article.title,
-                            'author': article.email ?? 'dont know',
-                            'imageUrl': article.imageUrl ?? '',
-                            'content': article.content ?? 'No content available',
-                          },
-                        ),
-                      ),
-                    );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ArticleDetailPage(articleId: article.id),
+                              ),
+                            );
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 15),
@@ -184,27 +224,41 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
                             ],
                           ),
                         ),
-                        if (article.authorId == currentUserId)
-                          Column(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.white),
-                                onPressed: () {
-                                  _showEditDialog(article);
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.yellow),
-                                onPressed: () async {
-                                  await _articleService.deleteArticle(article.id);
-                                  _loadArticles();
-                                },
-                              ),
-                            ],
-                          )
-                        else
-                          const SizedBox.shrink(),
+                        Column(
+                          children: article.authorId == currentUserId
+                              ? [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Colors.white),
+                                    onPressed: () {
+                                      _showEditDialog(article);
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.yellow),
+                                    onPressed: () async {
+                                      await _articleService.deleteArticle(article.id);
+                                      _loadArticles();
+                                    },
+                                  ),
+                                ]
+                              : [
+                                  IconButton(
+                                    icon: const Icon(Icons.comment, color: Colors.white),
+                                    onPressed: () {
+                                      _showAddCommentDialog(article.id);
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.thumb_up, color: Colors.white),
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Like button tapped')),
+                                      );
+                                    },
+                                  ),
+                                ],
+                        ),
                       ],
                     ),
                   ),
