@@ -15,8 +15,8 @@ class _PlusScreenState extends State<PlusScreen> {
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
   final ArticleService _articleService = ArticleService();
-
   Future<void> _pickImage() async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -79,28 +79,17 @@ class _PlusScreenState extends State<PlusScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  //todo
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  minimumSize: const Size.fromHeight(48),
-                ),
-                child: const Text(
-                  'Choose image',
-                  style: TextStyle(fontSize: 18, color: Colors.amber),
-                ),
-              ),
-              if (_selectedImage != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Image.file(
-                    _selectedImage!,
-                    height: 150,
-                    fit: BoxFit.cover,
+              TextField(
+                controller: _imageController,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Link of the image ....',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+              ),
               const SizedBox(height: 16),
               Container(
                 height: 200,
@@ -126,7 +115,7 @@ class _PlusScreenState extends State<PlusScreen> {
                   // TODO: implement create article logic
                   final title = _titleController.text.trim();
                   final content = _contentController.text.trim();
-
+                  final imageUrl = _imageController.text.trim();
                   if (title.isEmpty || content.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -141,10 +130,11 @@ class _PlusScreenState extends State<PlusScreen> {
                       title: title,
                       content: content,
                       imageFile: _selectedImage,
+                      imageUrl: imageUrl.isNotEmpty ? imageUrl : null,
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('✅ Artikkel opprettet!')),
+                      const SnackBar(content: Text('✅ Article posted successfully!')),
                     );
 
                     _titleController.clear();

@@ -17,7 +17,13 @@ class ArticleDetailPage extends StatelessWidget {
             Container(
               height: 200,
               color: Colors.grey[300],
-              child: Center(child: Text('Ingen bilde')),
+              child: article['imageUrl'] != null && article['imageUrl']!.isNotEmpty
+                  ? Image.network(
+                      article['imageUrl']!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    )
+                  : const Center(child: Text('Pas d\'image')),
             ),
             const SizedBox(height: 10),
             Text(
