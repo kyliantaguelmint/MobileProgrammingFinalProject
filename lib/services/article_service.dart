@@ -17,8 +17,8 @@ class ArticleService {
     required String title,
     required String content,
     File? imageFile,
+    String? imageUrl
   }) async {
-    String? imageUrl;
 
     /* if (imageFile != null) {
 
