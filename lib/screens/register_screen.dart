@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../database/profile.dart'; // adjust the path as needed
+import '../services/profile_service.dart'; // adjust the path as needed
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

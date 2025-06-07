@@ -1,8 +1,8 @@
-import 'package:firebase/database/profile.dart';
+import 'package:firebase/services/profile_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '../services/quoteService.dart'; // adjust path
+import '../services/quote_service.dart'; // adjust path
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
 
     if (i == 0) {
-      Navigator.pushReplacementNamed(context, 'home');
+      Navigator.pushReplacementNamed(context, 'articles');
     } else if (i == 1) {
       Navigator.pushReplacementNamed(context, 'plus');
     } else if (i == 2) {
