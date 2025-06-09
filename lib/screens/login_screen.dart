@@ -49,6 +49,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _checkIfLoggedIn();
+  }
+
+  void _checkIfLoggedIn() async {
+    await Future.delayed(const Duration(seconds: 1));
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      navigateHome();
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login'), centerTitle: true),

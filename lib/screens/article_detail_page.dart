@@ -14,7 +14,7 @@ class ArticleDetailPage extends StatelessWidget {
         .where('articleId', isEqualTo: articleId);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Détail de l\'article')),
+      appBar: AppBar(title: const Text('Article detail')),
       body: FutureBuilder<DocumentSnapshot>(
         future: articleRef.get(),
         builder: (context, snapshot) {
@@ -23,7 +23,7 @@ class ArticleDetailPage extends StatelessWidget {
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text("Article $articleId non trouvé"));
+            return Center(child: Text("Article not found"));
           }
 
           final article = snapshot.data!.data() as Map<String, dynamic>;
@@ -50,7 +50,7 @@ class ArticleDetailPage extends StatelessWidget {
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 20),
-                const Text('Commentaires', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Comments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 StreamBuilder<QuerySnapshot>(
                   stream: commentsRef.snapshots(),
@@ -62,7 +62,7 @@ class ArticleDetailPage extends StatelessWidget {
                     final comments = commentSnapshot.data?.docs ?? [];
 
                     if (comments.isEmpty) {
-                      return const Text("Aucun commentaire pour cet article.");
+                      return const Text("No comments");
                     }
 
                     return Column(
@@ -72,7 +72,7 @@ class ArticleDetailPage extends StatelessWidget {
                           title: Text(data['content'] ?? ''),
                           // subtitle: Text(data['user'] ?? 'Anonyme'), comments are anonymous for now
                           trailing: Text(
-                            (data['createdAt'] as Timestamp?)?.toDate().toString() ?? 'Date inconnue',
+                            (data['createdAt'] as Timestamp?)?.toDate().toString() ?? 'Unknown date',
                             style: const TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                         );

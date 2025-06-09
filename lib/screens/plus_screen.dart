@@ -112,7 +112,6 @@ class _PlusScreenState extends State<PlusScreen> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  // TODO: implement create article logic
                   final title = _titleController.text.trim();
                   final content = _contentController.text.trim();
                   final imageUrl = _imageController.text.trim();
