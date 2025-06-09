@@ -249,14 +249,14 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
                                       _showAddCommentDialog(article.id);
                                     },
                                   ),
-                                  IconButton(
-                                    icon: const Icon(Icons.thumb_up, color: Colors.white),
-                                    onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Like button tapped')),
-                                      );
-                                    },
-                                  ),
+                                  // IconButton(
+                                  //   icon: const Icon(Icons.thumb_up, color: Colors.white),
+                                  //   onPressed: () {
+                                  //     ScaffoldMessenger.of(context).showSnackBar(
+                                  //       const SnackBar(content: Text('Like button tapped')),
+                                  //     );
+                                  //   },
+                                  // ),
                                 ],
                         ),
                       ],
