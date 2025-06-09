@@ -47,6 +47,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    if (!context.mounted) return;
+    Navigator.pushReplacementNamed(context, 'login');
+  }
+
   void _showEditDialog(BuildContext context) {
     final bioController = TextEditingController(text: _profile?.bio ?? '');
     final firstNameController = TextEditingController(text: _profile?.first ?? '');
@@ -149,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ? const Center(child: CircularProgressIndicator())
           : _profile == null
               ? const Center(child: Text('Profile not found.'))
-              : ProfileContent(profile: _profile!),
+              : ProfileContent(profile: _profile!, onLogout: _signOut),
       bottomNavigationBar: NavigationSection(
         currentSection: _selectedScreen,
         onTap: _onButtonTapped,
@@ -223,7 +229,13 @@ Future<ProfileData?> fetchProfileData(String email) async {
 
 class ProfileContent extends StatelessWidget {
   final ProfileData profile;
-  const ProfileContent({super.key, required this.profile});
+  final VoidCallback onLogout;
+
+  const ProfileContent({
+    super.key,
+    required this.profile,
+    required this.onLogout,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -276,6 +288,17 @@ class ProfileContent extends StatelessWidget {
                 minFontSize: 12,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: onLogout,
+              icon: const Icon(Icons.logout),
+              label: const Text('Logout'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
