@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/article_service.dart';
 import 'article_detail_page.dart';
-import 'plus_screen.dart';
 import 'package:firebase/database/article.dart';
 import '../services/comment_service.dart';
 class ArticlePostingsPage extends StatefulWidget {
@@ -49,8 +48,8 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
     }
   }
   Future<void> _showAddCommentDialog(String articleId) async {
-    final TextEditingController _commentController = TextEditingController();
-    final _formKey = GlobalKey<FormState>();
+    final TextEditingController commentController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
 
     final submitted = await showDialog<bool>(
       context: context,
@@ -58,9 +57,9 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
         return AlertDialog(
           title: const Text('Add Comment'),
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: TextFormField(
-              controller: _commentController,
+              controller: commentController,
               decoration: const InputDecoration(labelText: 'Comment'),
               maxLines: 3,
               validator: (value) =>
@@ -74,10 +73,10 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (_formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate()) {
                   await _commentService.addComment(
                     articleId: articleId,
-                    content: _commentController.text,
+                    content: commentController.text,
                   );
                   Navigator.pop(context, true);
                 }
@@ -97,9 +96,9 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
 }
 
   Future<void> _showEditDialog(Article article) async {
-    final _titleController = TextEditingController(text: article.title);
-    final _contentController = TextEditingController(text: article.content);
-    final _formKey = GlobalKey<FormState>();
+    final titleController = TextEditingController(text: article.title);
+    final contentController = TextEditingController(text: article.content);
+    final formKey = GlobalKey<FormState>();
 
     final updated = await showDialog<bool>(
       context: context,
@@ -107,18 +106,18 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
         return AlertDialog(
           title: const Text('Edit Article'),
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  controller: _titleController,
+                  controller: titleController,
                   decoration: const InputDecoration(labelText: 'Title'),
                   validator: (value) =>
                       value == null || value.isEmpty ? 'Enter a title' : null,
                 ),
                 TextFormField(
-                  controller: _contentController,
+                  controller: contentController,
                   decoration: const InputDecoration(labelText: 'Content'),
                   maxLines: 3,
                   validator: (value) =>
@@ -134,11 +133,11 @@ class ArticlePostingsPageState extends State<ArticlePostingsPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (_formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate()) {
                   final updatedArticle = Article(
                     id: article.id,
-                    title: _titleController.text,
-                    content: _contentController.text,
+                    title: titleController.text,
+                    content: contentController.text,
                     imageUrl: article.imageUrl,
                     authorId: article.authorId,
                     email: article.email,

@@ -106,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               }
                             },
                             icon: const Icon(Icons.format_quote),
-                            label: const Text("Générer une citation"),
+                            label: const Text("Generate quotes"),
                           ),
                   ],
                 ),
@@ -164,8 +164,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onPressed: () {
           _showEditDialog(context);
         },
-        child: const Icon(Icons.edit),
         backgroundColor: Colors.amber[700],
+        child: const Icon(Icons.edit),
       ),
     );
   }

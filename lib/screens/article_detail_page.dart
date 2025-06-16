@@ -1,17 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase/services/comment_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase/database/article.dart';
 
 class ArticleDetailPage extends StatelessWidget {
   final String articleId;
+  final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-  const ArticleDetailPage({super.key, required this.articleId});
+  ArticleDetailPage({super.key, required this.articleId});
 
   @override
   Widget build(BuildContext context) {
     final articleRef = FirebaseFirestore.instance.collection('articles').doc(articleId);
     final commentsRef = FirebaseFirestore.instance
         .collection('comments')
-        .where('articleId', isEqualTo: articleId);
+        .where('articleId', isEqualTo: articleId)
+        .orderBy('createdAt', descending: false)
+        ;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Article detail')),
@@ -27,7 +33,7 @@ class ArticleDetailPage extends StatelessWidget {
           }
 
           final article = snapshot.data!.data() as Map<String, dynamic>;
-
+          final articleAuthorId = article['authorId'];
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(
@@ -64,17 +70,37 @@ class ArticleDetailPage extends StatelessWidget {
                     if (comments.isEmpty) {
                       return const Text("No comments");
                     }
-
+                    final commentService = CommentService();
                     return Column(
-                      children: comments.map((doc) {
+                      children: 
+                      comments.map((doc) {
                         final data = doc.data() as Map<String, dynamic>;
                         return ListTile(
                           title: Text(data['content'] ?? ''),
-                          // subtitle: Text(data['user'] ?? 'Anonyme'), comments are anonymous for now
-                          trailing: Text(
-                            (data['createdAt'] as Timestamp?)?.toDate().toString() ?? 'Unknown date',
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data['email'] ?? '',
+                                style: const TextStyle(fontSize: 13, color: Colors.black54),
+                                ),
+                              Text(
+                                (data['createdAt'] as Timestamp?)?.toDate().toString() ?? 'Unknown date',
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                            ],
                           ),
+                          trailing: (currentUserId == articleAuthorId)
+                              ? IconButton(
+                                  icon: const Icon(Icons.delete, color: Colors.yellow),
+                                  onPressed: () async {
+                                    await commentService.deleteComment(doc.id);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Comment deleted')),
+                                    );
+                                  },
+                                )
+                              : null,
                         );
                       }).toList(),
                     );
